@@ -1,5 +1,6 @@
 runPipelineOnDocker (
-  BBRepo: "https://theAnand17@bitbucket.org/satyam-repo-101/satyam-repo-101.git",
+  BBRepo: "https://github.com/theAnand17/Salesforce-Test-Automation-Framework.git",
+  CredentialsId: "github-credentials",
   Branch: "${APP_BRANCH}",
   mvnCmd: "-Denvironment=${AAP_ENVIRONMENT} -Denv=${APP_ENV} -Dcucumber.filter.tags=${TAGS} -DnoOfThread=${NUMBER_OF_THREADS}",
   emailRecipients: "satyam.test@outlook.com",
