@@ -1,0 +1,4 @@
+Account:
+  accountWithoutContact: SELECT Id, Name FROM Account WHERE Id NOT IN (SELECT AccountId FROM Contact) limit 1
+  boboEnrolledAccount: SELECT Id, Name FROM Account WHERE BoBo_Customer__c = true AND Id NOT IN (SELECT Account_Name__c FROM Account_Program__c WHERE Enrollment_Sub_Status__c = 'Cancellation Requested') LIMIT 1
+  accountWithoutTaxExemption: SELECT Id, Name FROM Account WHERE BoBo_Tax_Exempt__c = null AND BoBo_Tax_Exempt_Status__c = false limit 1

@@ -1,0 +1,56 @@
+# Environment Configuration Template
+# Copy this file to 'environment.yaml' and fill in your actual values
+
+####################################### QA Environment ###########################################
+QA:
+  # Browser Driver Paths (Optional - WebDriverManager handles this automatically)
+  # Edge: C://path//to//msedgedriver.exe
+  # Chrome: C://path//to//chromedriver.exe
+  
+  # Public Websites for Testing Examples
+  Google: https://www.google.com
+  Flipkart: https://www.flipkart.com
+  
+  # Salesforce Configuration
+  Salesforce: https://your-instance.my.salesforce.com
+  sfdc_base_url: https://your-instance.lightning.force.com/
+  
+  # Salesforce User Credentials
+  TrialUser_Username: your-username@your-org.com
+  # Use Jasypt encrypted password (see encryption link below)
+  TrialUser_Password: ENCRYPTED_PASSWORD_HERE
+  TrialUser_SecurePassword: ENCRYPTED_PASSWORD_WITH_TOKEN_HERE
+  
+  # Password Encryption Tool
+  # Encryptor Link: https://www.devglan.com/online-tools/jasypt-online-encryption-decryption
+  # Use algorithm: PBEWithMD5AndDES
+  
+  # Salesforce API Endpoints
+  CRM: https://your-instance.my.salesforce.com/secur/frontdoor.jsp?sid=
+  CRMSessionURL: https://login.salesforce.com/services/Soap/u/61.0/YOUR_ORG_ID/
+  SalesforceBaseURL: https://your-instance.my.salesforce.com/services/data/v61.0
+  
+  # Test Data (Replace with your actual values)
+  MyName: Your Name
+  SatyamUsername: '@YourUsername'
+  TestAccount_ID: '001XXXXXXXXXXXXXXX'  # Replace with actual Salesforce Account ID
+
+####################################### STAGING Environment (Optional) ###########################################
+# STAGING:
+#   Google: https://www.google.com
+#   Flipkart: https://www.flipkart.com
+#   Salesforce: https://your-staging-instance.my.salesforce.com
+#   sfdc_base_url: https://your-staging-instance.lightning.force.com/
+#   TrialUser_Username: staging-user@your-org.com
+#   TrialUser_Password: ENCRYPTED_PASSWORD_HERE
+#   CRM: https://your-staging-instance.my.salesforce.com/secur/frontdoor.jsp?sid=
+#   SalesforceBaseURL: https://your-staging-instance.my.salesforce.com/services/data/v61.0
+
+####################################### PRODUCTION Environment (Optional) ###########################################
+# PRODUCTION:
+#   Salesforce: https://your-production-instance.my.salesforce.com
+#   sfdc_base_url: https://your-production-instance.lightning.force.com/
+#   TrialUser_Username: prod-user@your-org.com
+#   TrialUser_Password: ENCRYPTED_PASSWORD_HERE
+#   CRM: https://your-production-instance.my.salesforce.com/secur/frontdoor.jsp?sid=
+#   SalesforceBaseURL: https://your-production-instance.my.salesforce.com/services/data/v61.0

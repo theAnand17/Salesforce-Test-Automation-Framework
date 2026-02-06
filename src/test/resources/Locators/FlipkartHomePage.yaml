@@ -1,0 +1,22 @@
+########################################### Flipkart Home Page ##########################################
+FlipkartSearchComponent:
+  searchBar:
+    type: "xpath"
+    value: "//input[@title='Search for Products, Brands and More']"
+    required: required
+  searchSuggestions:
+    type: "xpath"
+    value: "//input[@title='Search for Products, Brands and More']//parent::div//parent::div//following-sibling::ul"
+    required: required
+  relevanceElement:
+    type: "xpath"
+    value: "//div[contains(text(), 'Relevance')]"
+    required: required
+
+FlipkartNavBarComponent:
+  navBarMenuItems:
+    type: "xpath"
+    value: "//div[@class='_331-kn']//span"
+    required: required
+
+##########################################################################################################

@@ -1,0 +1,20 @@
+############################################# Google Home Page ############################################
+GoogleSearchComponent:
+  searchBar:
+    type: "xpath"
+    value: "//textarea[@class='gLFyf']"
+    required: required
+  searchButton:
+    type: "xpath"
+    value: "//div[@class='FPdoLc lJ9FBc']//input[@value='Google Search' and @type='submit']"
+    required: required
+  resultStats:
+    type: "xpath"
+    value: "//div[@id='result-stats']"
+    required: required
+  txtAllResults:
+    type: "xpath"
+    value: "//div[@role='list']//div[contains(text(), 'All')]"
+    required: required
+
+##########################################################################################################

@@ -1,0 +1,74 @@
+############################################# SFDC Login Page ############################################
+SFDCLoginComponent:
+  inputUsername:
+    type: "xpath"
+    value: "//input[@id='username']"
+    required: required
+  inputPassword:
+    type: "xpath"
+    value: "//input[@id='password']"
+    required: required
+  btnLogin:
+    type: "xpath"
+    value: "//input[@id='Login']"
+    required: required
+  txtService:
+    type: "xpath"
+    value: "//span[@title='Service']"
+    required: required
+
+
+############################################# SFDC Logout Page ############################################
+SFDCLogoutComponent:
+  userIcon:
+    type: "css"
+    value: "div.forceEntityIcon img.noicon"
+    required: required
+  logoutLink:
+    type: "css"
+    value: "a.logout"
+    required: required
+  loginForm:
+    type: "css"
+    value: "#theloginform"
+    required: required
+
+######################################### SFDC Create Record Page #########################################
+SFDCCreateRecordComponent:
+  btnSave:
+    type: "xpath"
+    value: "//button[@name='SaveEdit']"
+    required: required
+
+########################################### SFDC Notifications ############################################
+NotificationComponent:
+  notificationButton:
+    type: "xpath"
+    value: "//div[contains(@class,'unsNotificationsCounter')]//div[@class='headerButtonBody']"
+    required: required
+  notificationTitle:
+    type: "xpath"
+    value: "//li[contains(@class,'unsNotificationsListRow')]//h3[contains(@class,'notification-text-title')]"
+    required: required
+  notificationContent:
+    type: "xpath"
+    value: "//li[contains(@class,'unsNotificationsListRow')]//span[contains(@class,'notification-text uiOutputText')]"
+    required: required
+  notificationTitleContainer:
+    type: "xpath"
+    value: "//div[@class='titleContainer']"
+    required: required
+  markAsRead:
+    type: "xpath"
+    value: "//span[contains(@class,'MarkAllRead')]//a"
+    required: required
+
+############################################ BoBo Cancellation ############################################
+SFDCBoBoCancellation:
+  boBoCancellationMsg:
+    type: "xpath"
+    value: "//p//strong[contains(text(), 'Cancellation submitted for approval.')]"
+    required: required
+
+###########################################################################################################
+

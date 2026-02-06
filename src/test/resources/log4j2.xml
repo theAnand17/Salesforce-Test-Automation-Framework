@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="[%highlight{%style{%level}{bold}}{INFO=blue, WARN=bright_yellow, FATAL=bright_red, DEBUG=magenta, TRACE=cyan}] %msg%n" disableAnsi="false"/>
+        </Console>
+        <File name="LogFile" fileName="Artifacts/logs/TestLogs.log">
+            <PatternLayout pattern="[%d{HH:mm:ss}] : [%-5level]  %msg%n"/>
+        </File>
+        <Console name="SpecialInfoConsole" target="SYSTEM_OUT">
+            <PatternLayout pattern="[%highlight{%style{%level}{bold}}{INFO=green}] %style{%style{%msg%n}{magenta}}{bold}" disableAnsi="false"/>
+        </Console>
+        <Console name="JSONResponseConsole" target="SYSTEM_OUT">
+            <PatternLayout pattern="[%highlight{%style{%level}{bold}}{INFO=blue}] %msg%n" disableAnsi="false"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="INFO">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="LogFile"/>
+        </Root>
+        <Logger name="RunLog.specialInfo" level="INFO" additivity="false">
+            <AppenderRef ref="SpecialInfoConsole"/>
+            <AppenderRef ref="LogFile"/>
+        </Logger>
+        <Logger name="JSONLog.response" level="INFO" additivity="false">
+            <AppenderRef ref="JSONResponseConsole"/>
+        </Logger>
+    </Loggers>
+</Configuration>

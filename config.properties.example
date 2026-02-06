@@ -1,0 +1,46 @@
+############################ Salesforce API Configuration ##########################
+# Salesforce Connected App Credentials
+# To obtain these values:
+# 1. Go to Setup > Apps > App Manager in Salesforce
+# 2. Create a New Connected App or use an existing one
+# 3. Enable OAuth Settings and select appropriate scopes
+# 4. Copy the Consumer Key (client_id) and Consumer Secret (client_secret)
+
+client_id=YOUR_SALESFORCE_CONSUMER_KEY_HERE
+client_secret=YOUR_SALESFORCE_CONSUMER_SECRET_HERE
+
+# Salesforce User Credentials
+# Username: Your Salesforce login email
+# Password: Use Jasypt encrypted password (see encryption instructions below)
+username=your-username@your-org.com
+password=ENCRYPTED_PASSWORD_HERE
+
+# Salesforce Instance URL
+# Format: https://your-instance.my.salesforce.com
+TestUrl=https://your-instance.my.salesforce.com
+
+# Salesforce API Resource URL
+# This is the SOQL query endpoint path (usually no need to change)
+resourceUrl=/services/data/v61.0/query/?q=
+
+############################ Browser Configuration ##########################
+# Determines whether the browser opens in headless mode (true) or with a graphical interface (false)
+# Set to 'true' for CI/CD pipelines, 'false' for local development
+headlessMode=false
+
+############################ Password Encryption Instructions ##########################
+# Use Jasypt to encrypt your passwords before adding them to this file
+# 
+# Online Tool: https://www.devglan.com/online-tools/jasypt-online-encryption-decryption
+# Algorithm: PBEWithMD5AndDES
+# Secret Key: Use a secure key (store this separately, not in version control)
+# 
+# Steps:
+# 1. Go to the encryption tool
+# 2. Enter your plain text password
+# 3. Enter your secret encryption key
+# 4. Select algorithm: PBEWithMD5AndDES
+# 5. Click "Encrypt"
+# 6. Copy the encrypted value and paste it above
+#
+# Note: Keep your encryption key secure and share it only with authorized team members
