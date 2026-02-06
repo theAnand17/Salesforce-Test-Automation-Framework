@@ -8,7 +8,7 @@ public class PropertiesLoader {
 
     public Properties loadProperties() {
         try {
-            FileReader reader = new FileReader(System.getProperty("user.dir") + "//" + "config.properties");
+            FileReader reader = new FileReader(System.getProperty("user.dir") + java.io.File.separator + "config.properties");
             Properties properties = new Properties();
             properties.load(reader);
             return properties;

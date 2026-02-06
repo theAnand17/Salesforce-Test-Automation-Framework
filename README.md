@@ -126,6 +126,10 @@ cp config.properties.example config.properties
 
 **⚠️ Important:** Store your encryption key securely (e.g., environment variable, password manager)
 
+> [!IMPORTANT]
+> **Default Encryption Key**: The default encryption key in `PasswordDecrypt.java` is `SalesforceRules!2026`.
+> If you change this key, you MUST re-encrypt all passwords in `config.properties` and `environment.yaml` using the new key.
+
 ### Step 3: Create a Salesforce Connected App
 
 1. Log in to Salesforce

@@ -6,7 +6,7 @@ import java.util.Properties;
 
 public class PasswordDecrypt {
 
-    private static final String mpCryptoPassword = "17Jul98";
+    private static final String mpCryptoPassword = "SalesforceRules!2024";
 
     public PasswordDecrypt() {
     }

@@ -54,6 +54,7 @@ public class LaunchBrowser {
     private WebDriver setupChromeDriver() {
         WebDriverManager.chromedriver().setup();
         ChromeOptions options = new ChromeOptions();
+        
         if ("true".equalsIgnoreCase(headlessModeValue)) {
             options.addArguments("--headless=old"); // Run Chrome in headless mode
             options.addArguments("--disable-gpu"); // Disable the GPU to prevent some issues

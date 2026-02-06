@@ -111,7 +111,7 @@ public class CreateAccount extends Common {
         try {
             String jScript = readFileAsString(pathForJs + "createRecordDropDown.js");
             this.webDriverWait.until(d -> {
-                dropDownsElementMap = ((Map<String, List<WebElement>>) jse.executeScript(jScript));
+                dropDownsElementMap = ((Map<String, List<WebElement>>) getJSExecutor().executeScript(jScript));
                 return dropDownsElementMap.size() > 1;
             });
             RunLog.info("Drop Down Elements: " + dropDownsElementMap.toString());

@@ -43,7 +43,7 @@ public class Logout extends Common {
 
     private void getUserIcon() {
         try {
-            jse.executeScript("document.querySelector('div.forceEntityIcon img.noicon').click()");
+            getJSExecutor().executeScript("document.querySelector('div.forceEntityIcon img.noicon').click()");
         } catch (AssertionError | Exception e) {
             RunLog.error("Not able to get User Icon");
         }
@@ -53,12 +53,12 @@ public class Logout extends Common {
         try {
             Uninterruptibles.sleepUninterruptibly(Duration.ofSeconds(5));
             try {
-                jse.executeScript("document.querySelector('a.logout').click()");
+                getJSExecutor().executeScript("document.querySelector('a.logout').click()");
                 wait(30).until(d -> d.findElement(loginForm).isDisplayed());
             } catch (Exception e) {
-                jse.executeScript("document.querySelector('div.forceEntityIcon img.noicon').click()");
+                getJSExecutor().executeScript("document.querySelector('div.forceEntityIcon img.noicon').click()");
                 Uninterruptibles.sleepUninterruptibly(Duration.ofSeconds(5));
-                jse.executeScript("document.querySelector('a.logout').click()");
+                getJSExecutor().executeScript("document.querySelector('a.logout').click()");
                 wait(30).until(d -> d.findElement(loginForm).isDisplayed());
             }
             Uninterruptibles.sleepUninterruptibly(Duration.ofSeconds(5));

@@ -32,7 +32,10 @@ public class Common extends Element {
 
     public static WebDriver driver;
     public WebDriverWait webDriverWait;
-    public JavascriptExecutor jse = (JavascriptExecutor) driver;
+    // JavascriptExecutor initialized lazily to avoid NPE
+    protected JavascriptExecutor getJSExecutor() {
+        return (JavascriptExecutor) driver;
+    }
     public Environment environment = new Environment();
     private static final int STANDARD_PAGE_TIMEOUT_SECONDS = 120;
     private static final String SCREENSHOT_PATH = "Artifacts/screenshots/";
@@ -57,7 +60,7 @@ public class Common extends Element {
             Uninterruptibles.sleepUninterruptibly(10, TimeUnit.SECONDS);
             attachScreenShotOfThePageToAllureReport(Application + " website in " + browser + " browser");
         } catch (Exception e){
-            RunLog.error("Not able to launch browser " + e);
+            RunLog.error("Unable to launch browser configuration. Exception: " + e);
         }
     }
 
@@ -73,7 +76,7 @@ public class Common extends Element {
             Uninterruptibles.sleepUninterruptibly(5, TimeUnit.SECONDS);
             attachScreenShotOfThePageToAllureReport(  "URL in " + browser + " browser");
         } catch (Exception e){
-            RunLog.error("Not able to launch browser " + e);
+            RunLog.error("Unable to launch browser configuration. Exception: " + e);
         }
     }
 
@@ -86,7 +89,7 @@ public class Common extends Element {
             RunLog.info("Navigated to " + site);
             Uninterruptibles.sleepUninterruptibly(10, TimeUnit.SECONDS);
         } catch (Exception e){
-            RunLog.error("Failed to navigate to the website: " + websiteName);
+            RunLog.error("Failed to navigate to website: " + websiteName);
             RunLog.error("Please verify the website name and its corresponding value in the environment.yaml file.");
             RunLog.error("Exception: " + e.getMessage());
         }
@@ -104,39 +107,36 @@ public class Common extends Element {
                 RunLog.warn("Navigation status: Uncertain. May or may not have navigated.");
             }
         } catch (Exception e){
-            RunLog.error("Not able to navigate to the URL. Exception: " + e.getMessage());
+            RunLog.error("Unable to navigate to the URL. Exception: " + e.getMessage());
         }
     }
 
     public void navigateToSalesforceLoginUrl(String salesforceURL) {
         try{
             driver.get(salesforceURL);
-            Uninterruptibles.sleepUninterruptibly(Duration.ofSeconds(5));
+            waitForPageLoad(driver);
             String currentUrl = driver.getCurrentUrl();
-            String salesforceUrl = "playful-bear-tflz0-dev-ed.trailblaze.lightning.force.com";
-            if (currentUrl.contains(salesforceUrl)){
+            // Generic Salesforce domain check (works for any org)
+            if (currentUrl.contains("salesforce.com") || currentUrl.contains("force.com")){
                 RunLog.info("Successfully navigated to the Salesforce Login URL");
                 RunLog.info("Current URL: "+ currentUrl);
             } else {
                 RunLog.warn("Navigation status: Uncertain. May or may not have navigated.");
             }
         } catch (Exception e){
-            RunLog.error("Not able to navigate to the URL. Exception: " + e.getMessage());
+            RunLog.error("Unable to navigate to the URL. Exception: " + e.getMessage());
         }
     }
 
     public void closeAndQuitBrowser() {
         try {
-            // Close the browser and release resources
-            RunLog.info("Closing all tabs");
-            Uninterruptibles.sleepUninterruptibly(Duration.ofSeconds(2));
-            for (String handle : driver.getWindowHandles()) {
-                driver.switchTo().window(handle);
-                RunLog.info("Closing the browser");
-                driver.quit();
-                Uninterruptibles.sleepUninterruptibly(Duration.ofSeconds(2));
+            if (driver != null) {
+                RunLog.info("Closing all browser windows");
+                driver.quit(); // Closes all windows and ends the session
+                RunLog.info("Browser has been closed");
+            } else {
+                RunLog.info("No active browser session to close");
             }
-            RunLog.info("Browser has been closed");
         } catch (Exception e) {
             RunLog.error("An error occurred while closing the browser: " + e.getMessage());
         }
@@ -224,11 +224,11 @@ public class Common extends Element {
     }
 
     public void scrollToBottomOfThePage() {
-        jse.executeScript("window.scrollTo(0, window.innerHeight)");
+        getJSExecutor().executeScript("window.scrollTo(0, window.innerHeight)");
     }
 
     public void scrollToEndOfThePage() {
-        jse.executeScript("window.scrollBy(0,document.body.scrollHeight)");
+        getJSExecutor().executeScript("window.scrollBy(0,document.body.scrollHeight)");
     }
 
     public static void takeScreenshot(String screenshotName) {
@@ -241,7 +241,7 @@ public class Common extends Element {
             FileHandler.copy(screenshotFile, new File(screenshotPath));
             RunLog.info("Screenshot saved to: " + screenshotPath);
         } catch (IOException e) {
-            RunLog.error("Not able to take screenshot. " + e.getMessage());
+            RunLog.error("Unable to take screenshot. Exception: " + e.getMessage());
         }
     }
 
@@ -250,15 +250,12 @@ public class Common extends Element {
             Actions actions = new Actions(driver);
             actions.moveToElement(elementToBeClicked).click().build().perform();
         } catch (Exception var2) {
-            TestAsserts.fail("Could not click on element - " + elementToBeClicked, var2);
+            TestAsserts.fail("Unable to click on element: " + elementToBeClicked, var2);
         }
 
     }
 
-    public static void clickElementWithJS(WebElement element) {
-        JavascriptExecutor jsExecutor = (JavascriptExecutor) driver;
-        jsExecutor.executeScript("arguments[0].click();", element);
-    }
+    // Removed duplicate method - use clickElementJS() instead
 
     Map<String, WebElement> ElementMapWithArg;
 
@@ -266,14 +263,14 @@ public class Common extends Element {
     public Map<String, WebElement> getElementsAsMap(String jsPath) {
         String jScript = readFileAsString(jsPath);
         wait(120).until(d -> {
-            ElementMapWithArg = ((Map<String, WebElement>) jse.executeScript(jScript));
+            ElementMapWithArg = ((Map<String, WebElement>) getJSExecutor().executeScript(jScript));
             return !ElementMapWithArg.isEmpty();
         });
         return ElementMapWithArg;
     }
 
     @SuppressWarnings("unchecked")
-    Function<String, Map<String, WebElement>> elementMap = (script) -> ((Map<String, WebElement>) jse.executeScript(script));
+    Function<String, Map<String, WebElement>> elementMap = (script) -> ((Map<String, WebElement>) getJSExecutor().executeScript(script));
 
     public Map<String, WebElement> getElementsAsMap(String jsPath, String labelShouldPresent) {
         wait(120).until(d -> elementMap.apply(readFileAsString(jsPath)).containsKey(labelShouldPresent));
@@ -299,7 +296,7 @@ public class Common extends Element {
             filePath = "src/test/resources/" + filePath;
             content = new String(Files.readAllBytes(Paths.get(filePath)));
         } catch (IOException e) {
-            RunLog.error("Not able to read file " + e.getMessage());
+            RunLog.error("Unable to read file. Exception: " + e.getMessage());
         }
         return content;
     }
@@ -309,7 +306,7 @@ public class Common extends Element {
             JavascriptExecutor executor = (JavascriptExecutor)driver;
             executor.executeScript("arguments[0].click();", new Object[]{element});
         } catch (Exception var3) {
-            TestAsserts.fail("Unable to click element using JS  - " + element, var3);
+            TestAsserts.fail("Unable to click element using JS: " + element, var3);
         }
     }
 
@@ -321,19 +318,18 @@ public class Common extends Element {
             });
             RunLog.info("PAGE LOAD COMPLETED");
         } catch (Exception e) {
-            RunLog.error("Failed to wait for page load", e);
+            RunLog.error("Failed to wait for page load to complete", e);
         }
     }
 
     public static String getDefaultTextFromDropDown(WebDriver driver, By inputElement) {
-        String runningDriver = "";
         String selectedText = "";
         try {
             Select select = new Select(driver.findElement(inputElement));
             selectedText = select.getFirstSelectedOption().getText();
             return selectedText;
-        } catch (Exception var4) {
-            TestAsserts.fail(runningDriver + "Error occurred while getting the text -" + inputElement, var4);
+        } catch (Exception e) {
+            TestAsserts.fail("Error occurred while retrieving text from element: " + inputElement, e);
             return selectedText;
         }
     }
@@ -343,7 +339,7 @@ public class Common extends Element {
             JavascriptExecutor js = (JavascriptExecutor) driver;
             js.executeScript("arguments[0].scrollIntoView(true);", new Object[]{inputElement});
         } catch (Exception var2) {
-            TestAsserts.fail("Unable to scroll to element  - " + inputElement, var2);
+            TestAsserts.fail("Unable to scroll to element: " + inputElement, var2);
         }
     }
 
@@ -353,7 +349,7 @@ public class Common extends Element {
             JavascriptExecutor js = (JavascriptExecutor) driver;
             js.executeScript("arguments[0].scrollIntoView(true);", new Object[]{inputElement});
         } catch (Exception var3) {
-            TestAsserts.fail("Unable to scroll to element  - " + inputBy.toString(), var3);
+            TestAsserts.fail("Unable to scroll to element: " + inputBy.toString(), var3);
         }
     }
 
@@ -361,7 +357,7 @@ public class Common extends Element {
         try {
             driver.switchTo().defaultContent();
         } catch (Exception var1) {
-            TestAsserts.fail("Unable to switch to default content window from Frame. ", var1);
+            TestAsserts.fail("Unable to switch to default content window from Frame.", var1);
         }
     }
 
@@ -370,24 +366,17 @@ public class Common extends Element {
             Actions actions = new Actions(driver);
             actions.moveToElement(inputElement).doubleClick().build().perform();
         } catch (Exception var3) {
-            TestAsserts.fail("Unable to double click on element  -   " + inputElement, var3);
+            TestAsserts.fail("Unable to double click on element: " + inputElement, var3);
         }
     }
 
-    public static void actionClick(WebDriver driver, WebElement elementToBeClicked) {
-        try {
-            Actions actions = new Actions(driver);
-            actions.moveToElement(elementToBeClicked).click().build().perform();
-        } catch (Exception var2) {
-            TestAsserts.fail("Could not click on element - " + elementToBeClicked, var2);
-        }
-    }
+    // Removed duplicate method - use actionClick(WebElement) instead (line 248)
 
     public static void acceptAlert() {
         try {
             driver.switchTo().alert().accept();
         } catch (Exception var1) {
-            TestAsserts.fail("Unable too accept alert!", var1);
+            TestAsserts.fail("Unable to accept alert!", var1);
         }
     }
 
@@ -395,7 +384,7 @@ public class Common extends Element {
         try {
             driver.switchTo().frame(frameName);
         } catch (Exception var2) {
-            TestAsserts.fail("Failed to switch to frame  - " + frameName, var2);
+            TestAsserts.fail("Failed to switch to frame: " + frameName, var2);
         }
     }
 
@@ -405,7 +394,7 @@ public class Common extends Element {
             JavascriptExecutor js = (JavascriptExecutor)driver;
             js.executeScript(mouseOverScript, new Object[]{inputElement});
         } catch (Exception var3) {
-            TestAsserts.fail("Failed to move hover over the element  - " + inputElement, var3);
+            TestAsserts.fail("Failed to hover over the element: " + inputElement, var3);
         }
     }
 
@@ -418,7 +407,7 @@ public class Common extends Element {
             hoverAndClick.perform();
             RunLog.info("Clicked on element after hover");
         } catch (Exception e) {
-            logErrorAndTakeScreenshot("This may be due to element was not found or unable to perform action on the element", "hoverOnElementAndClick()", e.getMessage());
+            logErrorAndTakeScreenshot("Element may be missing or unable to perform action: " + e.getMessage(), "hoverOnElementAndClick()", e.getMessage());
         }
     }
 
@@ -489,11 +478,11 @@ public class Common extends Element {
             file.setLength(0);
             file.close();
         } catch (Exception e) {
-            RunLog.error("Not able to clear the Log File. Exception: " + e.getMessage());
+            RunLog.error("Unable to clear the Log File. Exception: " + e.getMessage());
         }
     }
 
-    Function<String, Map<String, List<WebElement>>> dropDownsElementMap = (script) -> ((Map<String, List<WebElement>>) jse.executeScript(script));
+    Function<String, Map<String, List<WebElement>>> dropDownsElementMap = (script) -> ((Map<String, List<WebElement>>) getJSExecutor().executeScript(script));
 
     public Map<String, List<WebElement>> getDropDownsElementMap(String jsPath, String labelName, String valueToBeSelected) {
         wait(120).until(d -> dropDownsElementMap.apply(readFileAsString(jsPath)).containsKey(labelName));
