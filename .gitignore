@@ -44,3 +44,4 @@ Artifacts/screenshots
 ### Configuration Files ###
 environment.yaml
 config.properties
+secrets.properties

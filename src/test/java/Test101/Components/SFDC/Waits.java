@@ -13,8 +13,10 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 public class Waits {
 
-    public static WebElement waitForElement(By inputElement, WAIT_CONDITIONS condition) {
-        return waitForElement(inputElement, condition);
+    private static final int DEFAULT_WAIT_SECONDS = 30;
+
+    public static WebElement waitForElement(By inputElement, WAIT_CONDITIONS condition) throws Exception {
+        return waitForElement(inputElement, condition, DEFAULT_WAIT_SECONDS);
     }
 
     public static WebElement waitForElement(By inputElement, WAIT_CONDITIONS condition, int WaitTime) throws Exception {
